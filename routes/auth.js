@@ -6,7 +6,9 @@ const { body, validationResult } = require("express-validator");
 var jwt =require('jsonwebtoken')
 //create a user using post "/api/auth".Does'nt require Auth . No login required
 var fetchUser=require("../middleware/fetchUser")
-const JWT_SCERET = 'Sarifisagoodb$oy'
+require('dotenv').config();
+const JWT_SECRET = process.env.JWT_SECRET ||'Sarifisagoodb$oy';
+//const JWT_SCERET = 'Sarifisagoodb$oy'
 //Route 1
 router.post(
   "/createUser",
@@ -45,7 +47,7 @@ router.post(
           id:user.id
         }
       }
-      const authtoken=jwt.sign(data, JWT_SCERET)
+      const authtoken=jwt.sign(data, JWT_SECRET)
     
       //res.json(user)
       success=true
@@ -89,9 +91,10 @@ router.post(
           id:user.id
         }
       }
-      const authtoken=jwt.sign(payload, JWT_SCERET)
+      const authToken = jwt.sign(payload, JWT_SECRET, { expiresIn: '1h' });
+      
       success=true
-      res.json({success,authtoken})
+      res.json({success,authToken})
 
     } catch (error) {
       console.error(error.message);
@@ -102,7 +105,7 @@ router.post(
   router.post(
     "/getUser",fetchUser,async(req,res)=>{
 try{  
-  userId=req.user.id
+ const userId=req.user.id
   const  user= await User.findById(userId).select("-password")
   res.send(user)
     } catch (error) {
