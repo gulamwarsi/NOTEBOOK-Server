@@ -1,3 +1,4 @@
+
 var jwt = require('jsonwebtoken')
 const JWT_SCERET = 'Sarifisagoodb$oy'
 const fetchUser=(req, res,next)=>{
